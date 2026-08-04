@@ -1,0 +1,52 @@
+<svg width="1200" height="260" viewBox="0 0 1200 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Every finding automatically maps to PCI DSS, NIST 800-53, SOC 2, ISO 27001, and MITRE ATT and CK">
+  <defs>
+    <linearGradient id="bgC" x1="0" y1="0" x2="1200" y2="260" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0a0e14"/>
+      <stop offset="1" stop-color="#0d1320"/>
+    </linearGradient>
+    <pattern id="gridC" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#152033" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="cA" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00e5a0"/><stop offset="1" stop-color="#00b386"/>
+    </linearGradient>
+    <linearGradient id="cB" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffb100"/><stop offset="1" stop-color="#ff8c00"/>
+    </linearGradient>
+    <linearGradient id="cC" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff5c8a"/><stop offset="1" stop-color="#d94e76"/>
+    </linearGradient>
+    <linearGradient id="cD" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5aa7ff"/><stop offset="1" stop-color="#2f7fe0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="260" fill="url(#bgC)"/>
+  <rect width="1200" height="260" fill="url(#gridC)" opacity="0.4"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <!-- PCI DSS -->
+    <rect x="40" y="60" width="520" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <rect x="40" y="60" width="12" height="70" rx="4" fill="url(#cA)"/>
+    <text x="72" y="92" fill="#d7e3f4" font-size="16" font-weight="700">PCI DSS v4.0</text>
+    <text x="72" y="116" fill="#5b6b82" font-size="12">cardholder data · payment security</text>
+
+    <!-- NIST -->
+    <rect x="580" y="60" width="580" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <rect x="580" y="60" width="12" height="70" rx="4" fill="url(#cB)"/>
+    <text x="612" y="92" fill="#d7e3f4" font-size="16" font-weight="700">NIST SP 800-53 Rev 5</text>
+    <text x="612" y="116" fill="#5b6b82" font-size="12">800+ controls · FedRAMP ready</text>
+
+    <!-- SOC 2 -->
+    <rect x="40" y="150" width="520" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <rect x="40" y="150" width="12" height="70" rx="4" fill="url(#cC)"/>
+    <text x="72" y="182" fill="#d7e3f4" font-size="16" font-weight="700">SOC 2 Type II</text>
+    <text x="72" y="206" fill="#5b6b82" font-size="12">security · availability · confidentiality</text>
+
+    <!-- ISO -->
+    <rect x="580" y="150" width="580" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <rect x="580" y="150" width="12" height="70" rx="4" fill="url(#cD)"/>
+    <text x="612" y="182" fill="#d7e3f4" font-size="16" font-weight="700">ISO 27001:2022 (+ ATT&amp;CK)</text>
+    <text x="612" y="206" fill="#5b6b82" font-size="12">Annex A · technique-level mapping</text>
+  </g>
+</svg>
+

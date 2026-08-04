@@ -1,0 +1,84 @@
+<svg width="1200" height="360" viewBox="0 0 1200 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The red team kill chain - from threat modeling and reconnaissance through lateral movement and post-engagement">
+  <defs>
+    <linearGradient id="bgK" x1="0" y1="0" x2="1200" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0a0e14"/>
+      <stop offset="1" stop-color="#0d1320"/>
+    </linearGradient>
+    <pattern id="gridK" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#152033" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="360" fill="url(#bgK)"/>
+  <rect width="1200" height="360" fill="url(#gridK)" opacity="0.4"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect x="40" y="40" width="1120" height="60" rx="10" fill="#101a2c" stroke="#1f2b42"/>
+    <text x="60" y="77" fill="#00e5a0" font-size="18" font-weight="700">✕ RED TEAM KILL CHAIN</text>
+    <text x="900" y="77" fill="#5b6b82" font-size="13">MITRE ATT&amp;CK MAPPED</text>
+  </g>
+
+  <!-- Phase row 1 -->
+  <g font-size="13">
+    <rect x="40" y="130" width="172" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <text x="56" y="158" fill="#ffb100" font-weight="700">01 THREAT MODEL</text>
+    <text x="56" y="182" fill="#5b6b82">STRIDE · PASTA · ATT&amp;CK</text>
+    <polygon points="212,165 224,165 218,158" fill="#00e5a0"/>
+
+    <rect x="236" y="130" width="172" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <text x="252" y="158" fill="#ffb100" font-weight="700">02 RECON</text>
+    <text x="252" y="182" fill="#5b6b82">OSINT · surface map</text>
+    <polygon points="408,165 420,165 414,158" fill="#00e5a0"/>
+
+    <rect x="432" y="130" width="172" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <text x="448" y="158" fill="#ffb100" font-weight="700">03 INITIAL ACCESS</text>
+    <text x="448" y="182" fill="#5b6b82">exploits · phishing</text>
+    <polygon points="604,165 616,165 610,158" fill="#00e5a0"/>
+
+    <rect x="628" y="130" width="172" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <text x="644" y="158" fill="#ffb100" font-weight="700">04 ESCALATE</text>
+    <text x="644" y="182" fill="#5b6b82">privileges · evasion</text>
+    <polygon points="800,165 812,165 806,158" fill="#00e5a0"/>
+
+    <rect x="824" y="130" width="172" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <text x="840" y="158" fill="#ffb100" font-weight="700">05 CREDENTIALS</text>
+    <text x="840" y="182" fill="#5b6b82">dump · tickets · pth</text>
+    <polygon points="996,165 1008,165 1002,158" fill="#00e5a0"/>
+
+    <rect x="1020" y="130" width="140" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <text x="1036" y="158" fill="#ffb100" font-weight="700">06 PERSIST</text>
+    <text x="1036" y="182" fill="#5b6b82">backdoors · bootkit</text>
+  </g>
+
+  <!-- Phase row 2 -->
+  <g font-size="13">
+    <rect x="40" y="235" width="172" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <text x="56" y="263" fill="#ffb100" font-weight="700">07 LATERAL</text>
+    <text x="56" y="287" fill="#5b6b82">wmi · rdp · smb · k8s</text>
+    <polygon points="212,270 224,270 218,263" fill="#00e5a0"/>
+
+    <rect x="236" y="235" width="172" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <text x="252" y="263" fill="#ffb100" font-weight="700">08 COLLECT</text>
+    <text x="252" y="287" fill="#5b6b82">data · secrets · dumps</text>
+    <polygon points="408,270 420,270 414,263" fill="#00e5a0"/>
+
+    <rect x="432" y="235" width="172" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <text x="448" y="263" fill="#ffb100" font-weight="700">09 EXFIL</text>
+    <text x="448" y="287" fill="#5b6b82">dns · https · doh</text>
+    <polygon points="604,270 616,270 610,263" fill="#00e5a0"/>
+
+    <rect x="628" y="235" width="172" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <text x="644" y="263" fill="#ffb100" font-weight="700">10 IMPACT</text>
+    <text x="644" y="287" fill="#5b6b82">destruction · dos</text>
+    <polygon points="800,270 812,270 806,263" fill="#00e5a0"/>
+
+    <rect x="824" y="235" width="172" height="70" rx="8" fill="#0f1420" stroke="#1f2b42"/>
+    <text x="840" y="263" fill="#ffb100" font-weight="700">11 DETECT</text>
+    <text x="840" y="287" fill="#5b6b82">blue team validation</text>
+    <polygon points="996,270 1008,270 1002,263" fill="#00e5a0"/>
+
+    <rect x="1020" y="235" width="140" height="70" rx="8" fill="#101a2c" stroke="#00e5a0" stroke-opacity="0.5"/>
+    <text x="1036" y="263" fill="#00e5a0" font-weight="700">12 REPORT</text>
+    <text x="1036" y="287" fill="#5b6b82">chain-of-custody</text>
+  </g>
+</svg>
+
