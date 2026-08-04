@@ -1,0 +1,107 @@
+{
+  "name": "omnisectester",
+  "version": "2.0.0",
+  "description": "Nation-state grade, defense-in-depth security testing framework. Tests web apps, extensions, desktop, mobile, cloud, AI/LLM, hardware, and supply chain from a single CLI.",
+  "main": "lib/index.js",
+  "bin": {
+    "omnisectester": "bin/omnisectester",
+    "omni": "bin/omnisectester"
+  },
+  "scripts": {
+    "test": "node test/cli.test.js",
+    "postinstall": "node lib/postinstall.js",
+    "lint": "eslint bin/ src/ lib/"
+  },
+  "keywords": [
+    "security",
+    "penetration-testing",
+    "vulnerability-scanner",
+    "red-team",
+    "bug-bounty",
+    "web-security",
+    "api-security",
+    "cloud-security",
+    "supply-chain",
+    "ai-security",
+    "llm-security",
+    "fuzzing",
+    "SAST",
+    "DAST",
+    "SCA",
+    "compliance",
+    "PCI-DSS",
+    "NIST",
+    "SOC2",
+    "ISO27001",
+    "MITRE-ATTACK",
+    "threat-modeling",
+    "business-logic",
+    "memory-corruption",
+    "firmware",
+    "hardware",
+    "post-exploitation"
+  ],
+  "author": {
+    "name": "OmniSec Tester Team",
+    "email": "security@omnisectester.io",
+    "url": "https://omnisectester.io"
+  },
+  "homepage": "https://github.com/iAMv1/omnisectester#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iAMv1/omnisectester.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iAMv1/omnisectester/issues"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "os": ["linux", "darwin", "win32"],
+  "files": [
+    "bin/",
+    "lib/",
+    "src/",
+    "templates/",
+    "python-wrapper/",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "commander": "^11.1.0",
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1",
+    "inquirer": "^9.2.12",
+    "update-notifier": "^7.0.0",
+    "node-fetch": "^3.3.2",
+    "yaml": "^2.3.4",
+    "ajv": "^8.12.0",
+    "json2csv": "^6.0.0",
+    "archiver": "^6.0.1",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.10",
+    "semver": "^7.6.0",
+    "node-stream-zip": "^1.15.0",
+    "crypto-js": "^4.2.0",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.4"
+  },
+  "preferGlobal": true,
+  "config": {
+    "python_version": ">=3.10.0",
+    "core_package": "omnisectester-core",
+    "install_dir": "~/.omnisectester",
+    "cache_dir": "~/.omnisectester/cache",
+    "evidence_dir": "~/.omnisectester/evidence",
+    "tools_dir": "~/.omnisectester/tools"
+  }
+}
+

@@ -1,0 +1,138 @@
+# OmniSec Tester - Default Configuration
+# Copy this file to omnisectester.yaml and customize
+
+version: "2.0.0"
+
+# Engagement settings
+engagement:
+  mode: gray_box  # automated|gray_box|red_team|purple_team|continuous
+  authorization: "YOUR_AUTHORIZATION_REFERENCE_HERE"
+  kill_switch: true
+  safety_baseline: "2026-04-08T00:00:00Z"
+
+# Threat modeling (MANDATORY - Step 0)
+threat_model:
+  enabled: true  # CANNOT BE DISABLED
+  frameworks:
+    - STRIDE
+    - PASTA
+    - ATTACK
+  adversary_profiles:
+    - APT29
+    - APT41
+  high_value_targets: []
+
+# Target definitions
+# Uncomment and customize for your targets
+# targets:
+#   - type: web
+#     url: "https://example.com"
+#     platforms: [web]
+#     auth:
+#       type: bearer
+#       token: "${API_TOKEN}"
+#     excluded_paths:
+#       - /logout
+#       - /static/*
+#   - type: cloud
+#     provider: aws
+#     profile: production
+#     regions:
+#       - us-east-1
+#       - us-west-2
+
+# Testing configuration
+testing:
+  # Authentication testing (MANDATORY - cannot be disabled)
+  authentication: true
+  
+  # Business logic testing (MANDATORY)
+  business_logic: true
+  
+  # Supply chain testing
+  supply_chain: true
+  
+  # Cloud security testing
+  cloud_security: true
+  
+  # AI/ML security testing
+  ai_ml_security: false  # Set to true for AI targets
+  
+  # Memory corruption testing
+  memory_corruption: true
+  
+  # Hardware/firmware testing
+  hardware_firmware: false  # Set to true for hardware targets
+  
+  # Post-exploitation (requires red_team mode)
+  post_exploitation: false
+  
+  # Stealth/evasion testing (requires red_team mode)
+  stealth_evasion: false
+  
+  # DoS testing (requires --force flag)
+  dos_testing: false
+  
+  # Rate limiting
+  rate_limit:
+    requests_per_second: 1
+    burst_size: 10
+  
+  # Destructive tests (DoS, fuzzing)
+  destructive: false
+  force: false  # Must be explicit for destructive tests
+
+# Reporting configuration
+reporting:
+  formats:
+    - json
+    - html
+    - pdf
+    - sarif
+    - attack_nav
+  output_dir: "./reports"
+  include_raw_output: true
+  include_evidence: true
+  compliance_frameworks:
+    - pci_dss
+    - nist_800_53
+    - soc2
+    - iso27001
+
+# Severity scoring
+scoring:
+  cvss_version: "4.0"
+  epss_enabled: true
+  epss_api: "https://api.first.org/epss/v1"
+  ssvc_enabled: true
+
+# Continuous testing
+continuous:
+  enabled: false
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  fail_on:
+    - critical
+    - high
+  notification:
+    email: ""
+    slack_webhook: ""
+
+# Tool configuration
+tools:
+  zap:
+    enabled: true
+    path: ""  # Auto-detect
+  nuclei:
+    enabled: true
+    templates: ""  # Auto-download
+  trivy:
+    enabled: true
+  syft:
+    enabled: true
+
+# Plugin configuration
+plugins:
+  enabled: true
+  directories:
+    - ./plugins
+    - ~/.omnisectester/plugins

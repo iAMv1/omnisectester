@@ -1,0 +1,20 @@
+# Tests
+test/
+*.test.js
+*.spec.js
+
+# Development
+eslint.config.js
+.prettierrc
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Source maps
+*.map
+
+# IDE
+.vscode/
+.idea/
