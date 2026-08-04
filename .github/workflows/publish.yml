@@ -1,4 +1,4 @@
-name: Publish to npm (Trusted Publishing)
+name: Publish to npm (Trusted Publishing / OIDC)
 
 on:
   release:
@@ -29,7 +29,7 @@ jobs:
       - name: Run tests
         run: npm test || echo "No tests to run"
 
-      - name: Publish to npm with provenance
+      - name: Publish to npm (Trusted Publishing - no stored token)
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
