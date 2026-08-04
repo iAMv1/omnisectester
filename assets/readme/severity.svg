@@ -1,0 +1,54 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three-pillar severity scoring combining CVSS 4.0, EPSS exploitation prediction, and SSVC decision framework">
+  <defs>
+    <linearGradient id="bgS" x1="0" y1="0" x2="1200" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0a0e14"/>
+      <stop offset="1" stop-color="#0d1320"/>
+    </linearGradient>
+    <pattern id="gridS" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#152033" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="300" fill="url(#bgS)"/>
+  <rect width="1200" height="300" fill="url(#gridS)" opacity="0.4"/>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <text x="40" y="55" fill="#d7e3f4" font-size="26" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">/ severity = 3-pillar</text>
+  </g>
+
+  <!-- Pillar 1: CVSS -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect x="40" y="85" width="350" height="175" rx="12" fill="#0f1420" stroke="#1f2b42"/>
+    <rect x="40" y="85" width="350" height="44" rx="12" fill="#141b2b"/>
+    <rect x="40" y="111" width="350" height="18" fill="#141b2b"/>
+    <text x="60" y="113" fill="#00e5a0" font-size="15" font-weight="700">① CVSS 4.0</text>
+    <text x="60" y="160" fill="#d7e3f4" font-size="14">Exploitability + impact</text>
+    <text x="60" y="185" fill="#5b6b82" font-size="13">AV · AC · PR · UI</text>
+    <text x="60" y="205" fill="#5b6b82" font-size="13">VC · VI · VA · scope</text>
+    <text x="60" y="230" fill="#ffb100" font-size="14">Score: 0.0–10.0</text>
+  </g>
+
+  <!-- Pillar 2: EPSS -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect x="425" y="85" width="350" height="175" rx="12" fill="#0f1420" stroke="#1f2b42"/>
+    <rect x="425" y="85" width="350" height="44" rx="12" fill="#141b2b"/>
+    <rect x="425" y="111" width="350" height="18" fill="#141b2b"/>
+    <text x="445" y="113" fill="#ffb100" font-size="15" font-weight="700">② EPSS</text>
+    <text x="445" y="160" fill="#d7e3f4" font-size="14">Exploitation probability</text>
+    <text x="445" y="185" fill="#5b6b82" font-size="13">Is it exploited in the wild?</text>
+    <text x="445" y="205" fill="#5b6b82" font-size="13">FIRST.org daily feed</text>
+    <text x="445" y="230" fill="#ffb100" font-size="14">Percentile: 0.0–1.0</text>
+  </g>
+
+  <!-- Pillar 3: SSVC -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect x="810" y="85" width="350" height="175" rx="12" fill="#0f1420" stroke="#1f2b42"/>
+    <rect x="810" y="85" width="350" height="44" rx="12" fill="#141b2b"/>
+    <rect x="810" y="111" width="350" height="18" fill="#141b2b"/>
+    <text x="830" y="113" fill="#ff5c8a" font-size="15" font-weight="700">③ SSVC</text>
+    <text x="830" y="160" fill="#d7e3f4" font-size="14">Stakeholder context</text>
+    <text x="830" y="185" fill="#5b6b82" font-size="13">Exploitation · exposure</text>
+    <text x="830" y="205" fill="#5b6b82" font-size="13">Utility · human impact</text>
+    <text x="830" y="230" fill="#ff5c8a" font-size="14">Decision tree</text>
+  </g>
+</svg>
+
