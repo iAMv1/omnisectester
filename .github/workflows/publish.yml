@@ -40,7 +40,7 @@ jobs:
         run: npm install --no-audit --no-fund
 
       - name: Publish to npm (trusted publishing / OIDC)
-        run: npm publish --provenance --access public
+        run: npm publish --provenance --access public --loglevel=silly
 
       - name: Verify publication
         run: npm info omnisectester
