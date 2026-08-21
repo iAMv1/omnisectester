@@ -17,22 +17,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # NOTE: no `registry-url` on purpose. setup-node would write an .npmrc
+      # containing `_authToken=${NODE_AUTH_TOKEN}` which stays EMPTY (this
+      # repo has no npm secret) and npm fails with ENEEDAUTH before it can
+      # attempt the OIDC id-token exchange. npm >= 11.5 detects GitHub
+      # Actions OIDC via the runner environment instead.
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          # Node 24 bundles npm >= 11.5 - required for OIDC trusted
-          # publishing (id-token exchange). Node 20's npm fails with
-          # ENEEDAUTH because it cannot mint provenance tokens.
           node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Publish to npm (Trusted Publishing - no stored token)
+      - name: Publish to npm (trusted publishing / OIDC)
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Verify publication
         run: npm info omnisectester
