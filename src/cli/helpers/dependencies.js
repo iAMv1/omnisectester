@@ -1,17 +1,18 @@
 const { exec } = require('child_process');
 const { promisify } = require('util');
-const ora = require('ora');
 const logger = require('./logger');
 
 const execAsync = promisify(exec);
 
 async function checkPythonInstallation() {
+  const cmd = process.platform === 'win32' ? 'python --version' : 'python3 --version || python --version';
   try {
-    const { stdout } = await execAsync('python3 --version || python --version');
+    const { stdout } = await execAsync(cmd);
     const version = stdout.trim().split(' ')[1];
+    if (!version) throw new Error('unparseable version output');
     const parts = version.split('.').map(Number);
     const major = parts[0];
-    const minor = parts[1];
+    const minor = parts[1] || 0;
 
     return {
       valid: major > 3 || (major === 3 && minor >= 10),
@@ -33,64 +34,65 @@ async function checkNodeModules() {
   const required = [
     'commander',
     'chalk',
-    'ora',
-    'inquirer',
-    'node-fetch',
     'yaml',
     'ajv',
-    'fs-extra'
+    'fs-extra',
+    'winston'
   ];
 
-  const results = {};
-  
-  for (const module of required) {
-    try {
-      const pkg = require(module);
-      results[module] = {
-        installed: true,
-        version: pkg.version || 'unknown'
-      };
-    } catch (error) {
-      results[module] = {
-        installed: false,
-        version: null
-      };
-    }
-  }
+  // require.resolve only verifies presence on the resolution path -
+  // cheaper and safer than require() (no module execution).
+  const entries = await Promise.all(
+    required.map(async (name) => {
+      try {
+        require.resolve(name);
+        let version = 'unknown';
+        try {
+          // eslint-disable-next-line global-require, import/no-dynamic-require
+          const pkgJson = require(require.resolve(`${name}/package.json`));
+          if (pkgJson && pkgJson.version) version = pkgJson.version;
+        } catch (_) { /* exports-blocked or missing - keep unknown */ }
+        return [name, { installed: true, version }];
+      } catch (_) {
+        return [name, { installed: false, version: null }];
+      }
+    })
+  );
 
-  return results;
+  return Object.fromEntries(entries);
 }
 
 async function checkTools() {
+  // Only universally available probes here; heavy security tools
+  // (zap, nuclei, ghidra) are checked by the Python core.
   const tools = {
     git: { command: 'git --version', required: true },
     pip: { command: 'pip --version', required: true },
     npm: { command: 'npm --version', required: false },
-    docker: { command: 'docker --version', required: false },
-    zap: { command: 'zap.sh -version', required: false },
-    nuclei: { command: 'nuclei -version', required: false },
-    ghidra: { command: 'ghidraRun -version', required: false }
+    docker: { command: 'docker --version', required: false }
   };
 
   const results = {};
 
-  for (const [tool, config] of Object.entries(tools)) {
-    try {
-      const { stdout } = await execAsync(config.command);
-      const version = stdout.trim().split('\n')[0];
-      results[tool] = {
-        installed: true,
-        version,
-        required: config.required
-      };
-    } catch (error) {
-      results[tool] = {
-        installed: false,
-        version: null,
-        required: config.required
-      };
-    }
-  }
+  // All tool probes are independent - run them concurrently.
+  await Promise.all(
+    Object.entries(tools).map(async ([tool, config]) => {
+      try {
+        const { stdout } = await execAsync(config.command, { timeout: 10000 });
+        results[tool] = {
+          installed: true,
+          version: stdout.trim().split('\n')[0],
+          required: config.required
+        };
+      } catch (_) {
+        results[tool] = {
+          installed: false,
+          version: null,
+          required: config.required
+        };
+      }
+    })
+  );
 
   return results;
 }
@@ -99,7 +101,7 @@ async function checkGitConfig() {
   try {
     const { stdout } = await execAsync('git config --global user.name');
     const name = stdout.trim();
-    
+
     try {
       const { stdout: email } = await execAsync('git config --global user.email');
       return {
@@ -107,14 +109,14 @@ async function checkGitConfig() {
         name,
         email: email.trim()
       };
-    } catch (error) {
+    } catch (_) {
       return {
         configured: false,
         name,
         email: null
       };
     }
-  } catch (error) {
+  } catch (_) {
     return {
       configured: false,
       name: null,
@@ -129,4 +131,3 @@ module.exports = {
   checkTools,
   checkGitConfig
 };
-

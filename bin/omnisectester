@@ -1,31 +1,43 @@
 #!/usr/bin/env node
-
-#!/usr/bin/env node
-
 /**
  * OmniSec Tester CLI
  * Nation-state grade security testing framework
- * Version: 2.0.0
  */
 
 const { program } = require('commander');
-const { initLogger } = require('../src/cli/helpers/logger');
-const EngageCommand = require('../src/cli/commands/engage');
-const ScanCommand = require('../src/cli/commands/scan');
-const ThreatModelCommand = require('../src/cli/commands/threat-model');
-const RedTeamCommand = require('../src/cli/commands/redteam');
-const ReportCommand = require('../src/cli/commands/report');
-const SbomCommand = require('../src/cli/commands/sbom');
-const ContinuousCommand = require('../src/cli/commands/continuous');
-const ListCommand = require('../src/cli/commands/list');
-const VerifyCommand = require('../src/cli/commands/verify');
-const SeverityCommand = require('../src/cli/commands/severity');
+const pkg = require('../package.json');
 
-// Initialize logger
-const logger = initLogger();
+// Handle fatal errors before anything else so users always get a report.
+process.on('uncaughtException', (error) => {
+  console.error(`[omnisectester] Fatal: ${error.message}`);
+  if (process.env.OMNI_DEBUG) console.error(error.stack);
+  process.exit(1);
+});
 
-// Display banner
-console.log(`
+process.on('unhandledRejection', (reason) => {
+  console.error(`[omnisectester] Unhandled rejection: ${reason && reason.message ? reason.message : reason}`);
+  if (process.env.OMNI_DEBUG) console.error(reason && reason.stack);
+  process.exit(1);
+});
+
+const argv = process.argv.slice(2);
+const wantsHelp = argv.length === 0 || argv.includes('-h') || argv.includes('--help');
+const wantsVersion = argv.includes('-v') || argv.includes('--version');
+const quiet = argv.includes('--quiet');
+
+// Minimal logger passed to command constructors. Winston stays unloaded
+// until a real command runs (commands re-init the full logger themselves),
+// keeping --help/-v startup fast.
+const cliLogger = {
+  info: (...args) => console.log(...args),
+  warn: (...args) => console.warn(...args),
+  error: (...args) => console.error(...args),
+  success: (...args) => console.log(...args)
+};
+
+// Skip the banner for -h/-v/--quiet: faster startup and script-friendly output.
+if (!wantsHelp && !wantsVersion && !quiet) {
+  console.log(`
 \x1b[36m╔══════════════════════════════════════════════════════════════╗\x1b[0m
 \x1b[36m║\x1b[0m  \x1b[1m\x1b[31m██████╗██╗   ██╗██████╗ ███████╗██████╗\x1b[0m                  \x1b[36m║\x1b[0m
 \x1b[36m║\x1b[0m  \x1b[1m\x1b[31m██╔══██╗██║   ██║██╔══██╗██╔════╝██╔══██╗\x1b[0m                 \x1b[36m║\x1b[0m
@@ -34,15 +46,16 @@ console.log(`
 \x1b[36m║\x1b[0m  \x1b[1m\x1b[31m██████╔╝╚██████╔╝██████╔╝███████╗██║  ██║\x1b[0m                 \x1b[36m║\x1b[0m
 \x1b[36m║\x1b[0m  \x1b[1m\x1b[31m╚═════╝  ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝\x1b[0m                 \x1b[36m║\x1b[0m
 \x1b[36m║\x1b[0m                                                              \x1b[36m║\x1b[0m
-\x1b[36m║\x1b[0m  \x1b[33mUniversal Security Testing Framework v2.0.0\x1b[0m                  \x1b[36m║\x1b[0m
+\x1b[36m║\x1b[0m  \x1b[33mUniversal Security Testing Framework v${pkg.version}\x1b[0m${' '.repeat(Math.max(0, 24 - pkg.version.length))}\x1b[36m║\x1b[0m
 \x1b[36m║\x1b[0m  \x1b[90mNation-State Grade | Defense-in-Depth | Production Ready\x1b[0m  \x1b[36m║\x1b[0m
 \x1b[36m╚══════════════════════════════════════════════════════════════╝\x1b[0m
 `);
+}
 
 program
   .name('omnisectester')
   .description('Nation-state grade security testing framework')
-  .version('2.0.0', '-v, --version');
+  .version(pkg.version, '-v, --version');
 
 // Global options
 program
@@ -54,53 +67,33 @@ program
   .option('--authorization <ref>', 'Authorization document reference')
   .option('--kill-switch', 'Enable kill switch (emergency stop)');
 
-// Engage command (full engagement)
-program.addCommand(new EngageCommand(logger));
+// Commands are required lazily inside factories so that `--help`,
+// `--version`, and unknown-command errors pay no module-load cost.
+function load(name) {
+  // eslint-disable-next-line global-require, import/no-dynamic-require
+  return require(`../src/cli/commands/${name}`);
+}
 
-// Scan command (platform-specific)
-const scanCommand = new ScanCommand(logger);
-program.addCommand(scanCommand);
+// Command modules load here; each file is tiny (commander only). Heavy
+// dependencies (winston/ajv/yaml/fs-extra + the Python bridge) load lazily
+// inside execute(), so --help/--version pay almost nothing.
+program.addCommand(new (load('engage'))(cliLogger));
+program.addCommand(new (load('scan'))(cliLogger));
+program.addCommand(new (load('threat-model'))(cliLogger));
+program.addCommand(new (load('redteam'))(cliLogger));
+program.addCommand(new (load('report'))(cliLogger));
+program.addCommand(new (load('sbom'))(cliLogger));
+program.addCommand(new (load('continuous'))(cliLogger));
+program.addCommand(new (load('list'))(cliLogger));
+program.addCommand(new (load('verify'))(cliLogger));
+program.addCommand(new (load('severity'))(cliLogger));
 
-// Threat model command (Step 0 - mandatory)
-program.addCommand(new ThreatModelCommand(logger));
-
-// Red team command (full kill chain)
-program.addCommand(new RedTeamCommand(logger));
-
-// Report command (generate reports)
-program.addCommand(new ReportCommand(logger));
-
-// SBOM command (supply chain)
-program.addCommand(new SbomCommand(logger));
-
-// Continuous command (CI/CD integration)
-program.addCommand(new ContinuousCommand(logger));
-
-// List command (list available tests)
-program.addCommand(new ListCommand(logger));
-
-// Verify command (verify tool installation)
-program.addCommand(new VerifyCommand(logger));
-
-// Severity command (lookup severity for CVE)
-program.addCommand(new SeverityCommand(logger));
+// Empty invocation -> help on stdout, exit 0. Must run before parse(),
+// because commander treats an empty argv as an error (help on stderr, exit 1).
+if (!argv.length) {
+  program.outputHelp();
+  process.exit(0);
+}
 
 // Parse arguments
 program.parse(process.argv);
-
-// Show help if no command provided
-if (!process.argv.slice(2).length) {
-  program.outputHelp();
-}
-
-// Handle uncaught errors
-process.on('uncaughtException', (error) => {
-  logger.error('Uncaught exception:', error);
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled rejection at:', promise, 'reason:', reason);
-  process.exit(1);
-});
-

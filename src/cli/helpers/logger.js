@@ -1,20 +1,16 @@
 const winston = require('winston');
 const chalk = require('chalk');
 
-function initLogger() {
+function createLogger() {
   const logger = winston.createLogger({
     level: process.env.LOG_LEVEL || 'info',
     format: winston.format.combine(
       winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-      winston.format.errors({ stack: true }),
-      winston.format.printf(({ level, message, timestamp }) => {
-        return `${timestamp} [${level.toUpperCase()}]: ${message}`;
-      })
+      winston.format.errors({ stack: true })
     ),
     transports: [
       new winston.transports.Console({
         format: winston.format.combine(
-          winston.format.colorize(),
           winston.format.printf(({ level, message, timestamp }) => {
             const colors = {
               error: 'red',
@@ -30,12 +26,32 @@ function initLogger() {
     ]
   });
 
+  // Distinct method names avoid clobbering winston's own warn/error
+  // (the old code reassigned logger.warn to call itself -> stack overflow).
   logger.success = (msg) => logger.info(chalk.green(`✅ ${msg}`));
-  logger.warn = (msg) => logger.warn(chalk.yellow(`⚠️  ${msg}`));
-  logger.error = (msg) => logger.error(chalk.red(`❌ ${msg}`));
+  const originalWarn = logger.warn.bind(logger);
+  const originalError = logger.error.bind(logger);
+  logger.warn = (msg) => originalWarn(chalk.yellow(`⚠️  ${msg}`));
+  logger.error = (msg) => originalError(chalk.red(`❌ ${msg}`));
 
   return logger;
 }
 
+// Shared singleton so helpers can `require('./logger').logger`
+// without re-creating transports on every import.
+let singleton = null;
+
+function initLogger() {
+  if (!singleton) {
+    singleton = createLogger();
+  }
+  return singleton;
+}
+
 module.exports = { initLogger };
 
+// Lazy getter keeps `logger.warn(...)` call sites working.
+Object.defineProperty(module.exports, 'logger', {
+  get: () => initLogger(),
+  enumerable: true
+});

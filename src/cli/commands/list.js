@@ -5,23 +5,23 @@ class ListCommand extends Command {
     super('list');
     this.logger = logger;
     this.description('List available tests, platforms, or tools');
-  }
 
-  configure() {
     this
       .option('-p, --platform <name>', 'List tests for specific platform')
       .option('-t, --taxonomy', 'Show vulnerability taxonomy')
       .option('--tools', 'List installed tools')
       .option('--compliance', 'List compliance frameworks')
       .option('--mitre', 'List MITRE ATT&CK techniques')
-      .parseOptions();
+      .action((options) => this.execute(options));
   }
 
   async execute(options) {
-    const OmniSec = require('../../lib/index');
-    const omni = new OmniSec();
-    
-    await omni.initialize(options);
+    // commander passes only local options here - merge in globals (--config, --quiet, ...)
+    Object.assign(options, this.optsWithGlobals());
+    const OmniSec = require('../../../lib/index');
+    const omni = new OmniSec({ quiet: true });
+
+    // list() is local-only: no Python core or full init required.
     const result = await omni.list({
       platform: options.platform,
       taxonomy: options.taxonomy,
@@ -35,4 +35,3 @@ class ListCommand extends Command {
 }
 
 module.exports = ListCommand;
-

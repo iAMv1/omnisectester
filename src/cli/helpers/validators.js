@@ -10,7 +10,7 @@ const ajv = new Ajv();
 const configSchema = {
   type: 'object',
   properties: {
-    version: { type: 'string', pattern: '^2\\.0\\.0$' },
+    version: { type: 'string', pattern: '^2\\.' },
     engagement: {
       type: 'object',
       properties: {
@@ -20,7 +20,7 @@ const configSchema = {
         },
         authorization: { type: 'string' },
         kill_switch: { type: 'boolean' },
-        safety_baseline: { type: 'string', format: 'date-time' }
+        safety_baseline: { type: 'string' }
       },
       required: ['mode']
     },
@@ -41,7 +41,7 @@ const configSchema = {
         type: 'object',
         properties: {
           type: { type: 'string' },
-          url: { type: 'string', format: 'uri' },
+          url: { type: 'string' },
           platforms: { type: 'array', items: { type: 'string' } }
         }
       }
