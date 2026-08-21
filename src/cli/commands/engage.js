@@ -5,10 +5,7 @@ class EngageCommand extends Command {
     super('engage');
     this.logger = logger;
     this.description('Run a full security engagement across all attack surfaces');
-    this.usage('[options] <target>');
-  }
 
-  configure() {
     this
       .argument('<target>', 'Target URL, file path, or identifier')
       .option('-m, --mode <mode>', 'Engagement mode', 'gray_box')
@@ -27,21 +24,23 @@ class EngageCommand extends Command {
       .option('--kill-switch', 'Enable emergency stop')
       .option('--format <formats>', 'Report formats (comma-separated)', 'json,html,pdf')
       .option('--compliance <frameworks>', 'Compliance frameworks to map', 'pci_dss,nist_800_53,soc2,iso27001')
-      .parseOptions();
+      .action((target, options) => this.execute(target, options));
   }
 
   async execute(target, options) {
-    this.logger.info(`Starting full engagement on: ${target}`);
-    this.logger.info(`Mode: ${options.mode}`);
-
+    // commander passes only local options here - merge in globals (--config, --quiet, ...)
+    Object.assign(options, this.optsWithGlobals());
     if (options.dos && !options.force) {
       this.logger.error('DoS testing requires --force flag');
       process.exit(1);
     }
 
-    const OmniSec = require('../../lib/index');
-    const omni = new OmniSec();
-    
+    this.logger.info(`Starting full engagement on: ${target}`);
+    this.logger.info(`Mode: ${options.mode}`);
+
+    const OmniSec = require('../../../lib/index');
+    const omni = new OmniSec({ quiet: options.quiet });
+
     await omni.initialize(options);
     const result = await omni.runEngagement({
       target,
@@ -67,4 +66,3 @@ class EngageCommand extends Command {
 }
 
 module.exports = EngageCommand;
-

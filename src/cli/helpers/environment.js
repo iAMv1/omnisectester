@@ -4,7 +4,7 @@ const os = require('os');
 const logger = require('./logger');
 
 async function setupEnvironment(installDir) {
-  // Create directory structure
+  // Create directory structure - independent dirs in parallel.
   const dirs = [
     'cache',
     'evidence',
@@ -15,12 +15,12 @@ async function setupEnvironment(installDir) {
     'templates'
   ];
 
-  for (const dir of dirs) {
-    await fs.ensureDir(path.join(installDir, dir));
-  }
+  await Promise.all(dirs.map((dir) => fs.ensureDir(path.join(installDir, dir))));
 
-  // Create .gitignore
-  const gitignore = `# OmniSec Tester
+  // Create .gitignore only when missing - avoids a disk write on every run.
+  const gitignorePath = path.join(installDir, '.gitignore');
+  if (!await fs.pathExists(gitignorePath)) {
+    const gitignore = `# OmniSec Tester
 cache/
 evidence/
 logs/
@@ -32,22 +32,22 @@ __pycache__/
 *.pfx
 secrets/
 credentials/
-  `;
-
-  await fs.writeFile(path.join(installDir, '.gitignore'), gitignore);
+`;
+    await fs.writeFile(gitignorePath, gitignore);
+  }
 
   // Set file permissions (Unix-like systems)
   if (process.platform !== 'win32') {
     const { exec } = require('child_process');
     const { promisify } = require('util');
     const execAsync = promisify(exec);
-    
+    const { chmod } = require('fs').promises;
+
     try {
-      await execAsync(`chmod 700 ${installDir}`);
-      await execAsync(`chmod 700 ${path.join(installDir, 'evidence')}`);
-      await execAsync(`chmod 700 ${path.join(installDir, 'credentials')}`);
+      await chmod(installDir, 0o700);
+      await chmod(path.join(installDir, 'evidence'), 0o700);
     } catch (error) {
-      logger.warn('Could not set file permissions');
+      logger.warn(`Could not set file permissions: ${error.message}`);
     }
   }
 
