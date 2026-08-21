@@ -1,4 +1,4 @@
-name: Publish to npm (Trusted Publishing / OIDC)
+name: Publish to npm
 
 on:
   release:
@@ -11,37 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # NOTE: no `registry-url` on purpose. setup-node would write an .npmrc
-      # containing `_authToken=${NODE_AUTH_TOKEN}` which stays EMPTY (this
-      # repo has no npm secret) and npm fails with ENEEDAUTH before it can
-      # attempt the OIDC id-token exchange. npm >= 11.5 detects GitHub
-      # Actions OIDC via the runner environment instead.
+      # Classic token auth: registry-url makes setup-node write an .npmrc
+      # that reads NODE_AUTH_TOKEN from the repo secret NPM_TOKEN
+      # (granular token, bypass-2fa, scoped to omnisectester).
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-
-      # Bundled npm on the runner may predate 11.5 (where OIDC trusted
-      # publishing landed). Force the latest npm so the id-token exchange
-      # is supported, and print versions to make failures diagnosable.
-      - name: Ensure npm >= 11.5 for OIDC support
-        run: |
-          npm install -g npm@latest
-          echo "node: $(node -v)"
-          echo "npm:  $(npm -v)"
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Publish to npm (trusted publishing / OIDC)
-        run: npm publish --provenance --access public --loglevel=silly
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Verify publication
         run: npm info omnisectester
-
