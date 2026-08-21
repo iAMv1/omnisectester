@@ -27,6 +27,15 @@ jobs:
         with:
           node-version: '24'
 
+      # Bundled npm on the runner may predate 11.5 (where OIDC trusted
+      # publishing landed). Force the latest npm so the id-token exchange
+      # is supported, and print versions to make failures diagnosable.
+      - name: Ensure npm >= 11.5 for OIDC support
+        run: |
+          npm install -g npm@latest
+          echo "node: $(node -v)"
+          echo "npm:  $(npm -v)"
+
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
