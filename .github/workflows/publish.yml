@@ -20,7 +20,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # Node 24 bundles npm >= 11.5 - required for OIDC trusted
+          # publishing (id-token exchange). Node 20's npm fails with
+          # ENEEDAUTH because it cannot mint provenance tokens.
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
