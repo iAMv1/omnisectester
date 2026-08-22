@@ -29,19 +29,19 @@ Every claim below is backed by tests in this repository and verified end-to-end 
 | **Cloud** | Offline IaC/config misconfiguration auditing |
 | **Post-exploitation** | Evidence-based assessment mapped to MITRE ATT&CK |
 | **Auth & business logic** | Login-flow session testing, IDOR pattern probes, rate-limit detection |
-| **CVE intelligence** | Live CVSS lookups from NVD |
+| **Severity intelligence** | Three pillars per finding: CVSS (NVD) + EPSS probability (FIRST) + CISA KEV listing + deterministic SSVC decision; exploitation state escalates final severity |
+| **Compliance & custody** | Auto-mapped PCI DSS / NIST 800-53 / SOC 2 / ISO 27001 controls per finding; SHA-256 chain-of-custody manifest on every result |
 | **CI/CD native** | JSON + SARIF 2.1.0 output, deterministic exit codes (`--fail-on` → exit 2), `verify-tools --strict` gate |
 
 ### Honest limitations (we ship this table, not marketing)
 
 | Not yet built | Status |
 |---|---|
-| Browser extension scanning | wiring only |
 | Firmware / hardware analysis | queued last (owner priority) |
-| PDF / JUnit XML / ATT&CK Navigator reports | roadmap |
-| EPSS + SSVC scoring pillars, compliance auto-mapping (PCI/NIST/SOC2/ISO) | roadmap |
-| Red-team kill-chain simulation | roadmap |
-| LLM-powered attack chaining | optional `--llm` layer ships today (bring your own key); deeper chaining roadmap |
+| Deep LLM attack chaining (multi-step autonomous exploits) | optional `--llm` layer ships today (bring your own key); chaining is roadmap |
+| Authenticated crawl *depth* | `--auth`/`--login-url` authenticate requests today; post-login app mapping is roadmap |
+| Scan diffing beyond `continuous` | baseline snapshots between arbitrary scans |
+| Parallel scanning at scale | rate-limited sequential engine; concurrency roadmap |
 
 ---
 
@@ -111,7 +111,7 @@ omnisectester scan supply-chain  .                        # deps + CI/CD checks
 omnisectester scan cloud         ./infra                  # IaC/config audit
 ```
 
-Extension and firmware scanning are roadmap items (see limitations above).
+Extension scanning ships (`omnisectester scan extension addon.crx`); firmware is the remaining roadmap item (see limitations above).
 
 ---
 
@@ -123,6 +123,9 @@ Extension and firmware scanning are roadmap items (see limitations above).
 | **Markdown** | human-readable summary |
 | **HTML** | findings with embedded terminal-style PoC blocks |
 | **SARIF 2.1.0** | GitHub code scanning / IDE workflow |
+| **JUnit XML** | test-report gates (Jenkins/GitLab/Azure) |
+| **ATT&CK Navigator layer** | post-exploitation coverage as a heatmap |
+| **PDF** | dependency-free, shareable executive summary |
 
 Unsupported formats are reported back explicitly — nothing is silently dropped.
 
@@ -182,10 +185,57 @@ Agent-facing docs: [`AGENTS.md`](AGENTS.md) · [`llms.txt`](llms.txt) · install
 ```bash
 npm install
 npm test            # CLI suite (15 behavioral subprocess assertions)
-cd ../omnisectester-core && python -m unittest discover -s tests -v   # engine suite (33)
+cd ../omnisectester-core && python -m unittest discover -s tests -v   # engine suite (77)
 ```
 
 - Issues: <https://github.com/iAMv1/omnisectester/issues>
+
+---
+
+## Known shortcomings & what we're working on next
+
+We benchmark against deliberately vulnerable apps and publish the numbers,
+including the ones that embarrassed us.
+
+**Measured false-positive history (real targets, published as measured):**
+
+| Benchmark target | Stack | Findings before | After FP fixes |
+|---|---|---|---|
+| OWASP Juice Shop (demo) | Angular SPA + Cloudflare | 15 (~65% false) | **2, both accurate** |
+| httpbin.org | Flask echo endpoints | 11 (1 false: X002) | **10, all true** |
+
+False-positive classes found this way and fixed, each locked behind a
+regression test so it cannot come back:
+
+1. **SPA catch-all shells** — single-page apps return HTTP 200 with the
+   same shell for every path; the path probe now baselines a random nonce
+   URL and requires content-signature matches (`KEY=` pairs for `.env`,
+   PK magic for archives, ...) before reporting.
+2. **Hydration-script echoes** — SPAs embed query params verbatim inside
+   inline `<script>` state JSON; inert in browsers. The reflection parser
+   now mirrors browser semantics (first `</script>` closes a block) and
+   only counts payloads that form their own script block.
+3. **JSON / plain-text reflections** — echo endpoints like `httpbin.org/post`
+   return payloads inside JSON strings; non-HTML/XML content types are never
+   flagged.
+
+**Actively working on (next up):**
+
+- **DVWA + WebGoat benchmark matrix** — deferred only because our CI Docker
+  engine would not start headless during the last run; the moment it does,
+  detection quality gets two more columns in this table.
+- **Authenticated crawl depth** — credentials already flow end-to-end
+  (`--auth`, `--login-url`, session-cookie adoption); teaching the crawler
+  to map the app *behind* the login is the next engine milestone.
+- **Scan diffing everywhere** — `continuous` diffs against last state
+  today; arbitrary-scan baselines are next.
+- **Severity confidence labels** — heuristic findings (rate-limiting, IDOR)
+  already carry `SUSPECTED` markers; we want calibrated confidence on every
+  heuristic row instead of just the loudest ones.
+
+If you find a false positive or false negative on a target you own,
+[open an issue](https://github.com/iAMv1/omnisectester/issues) with the
+finding JSON — benchmarks are how this table shrinks.
 
 ---
 
