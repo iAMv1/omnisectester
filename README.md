@@ -1,14 +1,14 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/readme/hero.svg">
-    <img alt="OmniSec Tester - nation-state grade security testing across every attack surface from one CLI" src="assets/readme/hero.svg" width="100%">
+    <img alt="OmniSec Tester - agentic security scanner across web, mobile, desktop, cloud, AI and supply chain" src="assets/readme/hero.svg" width="100%">
   </picture>
 </p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/omnisectester"><img alt="npm version" src="https://img.shields.io/npm/v/omnisectester?color=00e5a0&label=npm&style=flat-square"></a>
   <a href="https://github.com/iAMv1/omnisectester"><img alt="GitHub" src="https://img.shields.io/github/stars/iAMv1/omnisectester?color=ffb100&style=flat-square"></a>
-  <a href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/license-MIT-5aa7ff?style=flat-square"></a>
+  <a href="https://opensource.org/licenses/MIT"><img alt="License" src="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-5aa7ff?style=flat-square"></a>
   <img alt="Platforms: Linux, macOS, Windows" src="https://img.shields.io/badge/platforms-linux%20%7C%20macos%20%7C%20windows-ff5c8a?style=flat-square">
   <img alt="Language: Node + Python" src="https://img.shields.io/badge/stack-node%20%2B%20python-d7e3f4?style=flat-square">
 </p>
@@ -17,81 +17,31 @@
 
 ## Why OmniSec Tester?
 
-Every number below is **measured from this repository's test suite and live runs** — not aspirational marketing.
+Every claim below is backed by tests in this repository and verified end-to-end runs.
 
-| | Measured |
+| Capability | What it actually does |
 |---|---|
-| **CVE severity accuracy** | 5/5 landmark CVEs match NVD exactly (Log4Shell 10.0 CRITICAL · Heartbleed 7.5 HIGH · EternalBlue 8.8 HIGH · BlueKeep 9.8 CRITICAL · MOVEit 9.8 CRITICAL) |
-| **Live intel** | CVSS scores pulled straight from the NVD 2.0 API (~1.3 s per lookup), never hardcoded |
-| **Cold start** | ~180 ms for `--version` / `--help`, ~210 ms for full `list` / `verify-tools` runs |
-| **Install footprint** | 20 KB package · 7 runtime dependencies · 16 MB node_modules · installs in seconds |
-| **Supply-chain hygiene** | `npm audit`: **0 vulnerabilities** · no postinstall network calls · CI-safe setup |
-| **CI-ready by design** | JSON output on every machine command · deterministic exit codes (invalid target/platform/CVE → exit 1) · `verify-tools --strict` gate fails builds when required components are missing |
-| **Tested behaviorally** | 15 subprocess-level assertions drive the real binary — exit codes, output shapes, failure paths — verified end-to-end on Windows and Ubuntu |
+| **Web agent** | Crawls same-origin pages, discovers params/forms itself, probes reflected XSS (GET+POST) with executable curl PoCs, audits security headers/TLS/cookies/sensitive paths/open redirects — rate-limited, budget-capped |
+| **AI/LLM scanning** | Prompt-injection battery (instruction override, roleplay escape, system-prompt extraction, secret fishing) against any OpenAI-compatible chat endpoint |
+| **Mobile** | Android APK static analysis: dangerous permissions, debuggable, allowBackup, signature files |
+| **Desktop** | Binary metadata checks (PE headers, debug artifacts, signing) |
+| **Supply chain** | SBOM generation + OSV.dev vulnerability matching; CI/CD workflow poisoning checks |
+| **Cloud** | Offline IaC/config misconfiguration auditing |
+| **Post-exploitation** | Evidence-based assessment mapped to MITRE ATT&CK |
+| **Auth & business logic** | Login-flow session testing, IDOR pattern probes, rate-limit detection |
+| **CVE intelligence** | Live CVSS lookups from NVD |
+| **CI/CD native** | JSON + SARIF 2.1.0 output, deterministic exit codes (`--fail-on` → exit 2), `verify-tools --strict` gate |
 
-### What works today
+### Honest limitations (we ship this table, not marketing)
 
-```bash
-omnisectester severity CVE-2021-44228   # live CVSS lookup from NVD
-omnisectester scan web <url>            # AGENT: crawls, maps surface, probes, PoCs
-omnisectester engage <url>              # threat model FIRST, then agent scan + report
-omnisectester threat-model <target>     # STRIDE rows driven by observed facts
-omnisectester sbom <dir> --vulns        # CycloneDX 1.5 + OSV.dev vulnerability matching
-omnisectester continuous --targets a,b  # stateful new-findings diffing
-omnisectester report <result.json>      # markdown / HTML / JSON / SARIF reports
-omnisectester verify-tools              # environment audit (+ --strict CI gate)
-```
-
-**Agent scope controls** (scan web):
-
-```bash
---rate-limit 2              # rps - keep low against production
---max-pages 50              # crawl cap
---fail-on high              # exit 2 blocks the pipeline
---include-subdomains        # widen crawl scope
---exclude "/logout,/admin"  # skip regexes
---auth bearer "$TOKEN"      # authenticated scanning (also basic|cookie|header)
-```
-
-The `scan` command is a **deterministic agent**: it crawls same-origin pages,
-discovers query params and forms on its own, decides which endpoints to probe,
-validates every reflection with an executable curl PoC, respects a request
-budget, and de-duplicates findings. Threat modeling runs **before** probing —
-and again after, with relevance derived from what was actually observed.
-
-Exit codes: `0` clean · `1` failure · `2` findings met `--fail-on`.
-
-### Claim ledger
-
-| Original promise | Status |
+| Not yet built | Status |
 |---|---|
-| "Threat model generated before any test runs" | ✅ **true since v0.2** |
-| "Supply chain testing" | ✅ **true since v0.2** — SBOM + OSV.dev vuln matching, batch endpoint since v0.7 |
-| Findings carry working proofs | ✅ curl PoCs for GET + POST reflection, open redirects |
-| Cookie security audit | ✅ Secure/HttpOnly/SameSite checks (v1.0) |
-| Open redirect detection | ✅ sink-named params probed with no-follow requests (v1.2) |
-| TLS certificate lifecycle | ✅ expired/expiring findings (v1.3) |
-| Continuous monitoring | ✅ stateful new-findings diffing across runs (v0.9) |
-| CI/CD integration | ✅ exit gates, JSON/SARIF 2.1.0 output |
-| Business-logic / auth flow testing | ❌ roadmap v0.3+ (needs authenticated crawling) |
-| Cloud / AI-LLM / mobile / firmware engines | ❌ wiring only — honest stubs |
-| Post-exploitation, red-team kill chain | ❌ not built; optional LLM layer planned (`--llm`, bring your own key) |
-
-### Roadmap
-
-- v0.2.x: OSV enrichment hardening · crawl depth controls · auth hooks
-- v0.3: optional `--llm` layer (attack chaining, narrative reporting) - user's key, user's cost; the deterministic gate stays free
-- Docker sandbox for safe active validation
-
----
-
-## What is it?
-
-**OmniSec Tester** is a security testing framework CLI that simulates the full kill chain of an advanced persistent threat — from reconnaissance to post-exploitation — across **every attack surface**, from a single command line.
-
-Its thinking is simple: **an attacker does not scan for CVEs. An attacker chains business-logic flaws, supply-chain backdoors, cloud misconfigurations, and weak credentials into one path to your crown jewels.** So instead of a checklist, OmniSec Tester is built to run adversary simulations.
-
-> Auth testing is **default-on**. Business logic and supply chain testing are **mandatory**, not opt-in toggles. A documented threat model (STRIDE + PASTA + MITRE ATT&CK) is generated **before any test runs**.
+| Browser extension scanning | wiring only |
+| Firmware / hardware analysis | queued last (owner priority) |
+| PDF / JUnit XML / ATT&CK Navigator reports | roadmap |
+| EPSS + SSVC scoring pillars, compliance auto-mapping (PCI/NIST/SOC2/ISO) | roadmap |
+| Red-team kill-chain simulation | roadmap |
+| LLM-powered attack chaining | optional `--llm` layer ships today (bring your own key); deeper chaining roadmap |
 
 ---
 
@@ -99,92 +49,69 @@ Its thinking is simple: **an attacker does not scan for CVEs. An attacker chains
 
 ```bash
 # install globally
-npm install -g omnisectester
+npm install -g omnisectester        # requires Python >= 3.10 on PATH
 
-# look up any CVE's live severity from NVD
+# live CVE severity from NVD (no Python needed)
 omnisectester severity CVE-2021-44228
 
-# audit your environment (Python, tools, deps) - CI-gateable
+# agentic web scan: crawl -> discover -> probe -> PoC -> gate
+omnisectester scan web https://your-app.example --fail-on critical
+
+# authenticated scanning behind a login form
+omnisectester scan web https://app.example \
+  --login-url https://app.example/login --login-data "user=a&pass=b"
+
+# prompt-injection battery against an LLM endpoint
+omnisectester scan ai https://your-chat.example --auth-token "$KEY"
+
+# mobile / desktop / supply chain / cloud
+omnisectester scan mobile app.apk
+omnisectester scan desktop app.exe
+omnisectester scan supply-chain .
+omnisectester scan cloud ./infra
+
+# SBOM with vulnerability matching
+omnisectester sbom . --vulns
+
+# continuous monitoring - reports only NEW findings vs last run
+omnisectester continuous --targets https://app.example --fail-on high
+
+# environment audit / CI gate
 omnisectester verify-tools --strict
-
-# browse the built-in taxonomy and platforms
-omnisectester list --taxonomy
-
-# drop a config in your project root (schema-validated)
-omnisectester.yaml
 ```
 
-Deep scanning (`engage`, `scan`, `redteam`, `report`, ...) is wired and ready but
-requires the Python core package — see [Roadmap](#roadmap-needs-omnisectester-core).
+Exit codes everywhere: `0` clean · `1` failure · `2` findings met `--fail-on`.
 
 ---
 
 ## How it works
 
-OmniSec Tester executes a **12-phase kill chain**, mapped to MITRE ATT&CK at every step. This is an adversary simulation, not a scanner:
+The engine ([omnisectester-core](https://github.com/iAMv1/omnisectester-core), stdlib-only Python) runs a phased loop — and the threat model runs **before any probing**, then again after with observed-fact relevance:
 
-<p align="center">
-  <img alt="The red team kill chain - from threat modeling and reconnaissance through lateral movement and post-engagement" src="assets/readme/killchain.svg" width="100%">
-</p>
+```
+threat model ──► crawl ──► map surface ──► probe ──► validate ──► report
+     ▲                                                            │
+     └──────────────── re-runs with observed facts ◄──────────────┘
+```
 
-Each phase is traceable end-to-end: findings carry their **MITRE ATT&CK technique**, the **attack path** they open, and the **compliance controls** they breach.
+Findings are deterministic, severity-sorted, and carry
+`{id, title, severity, evidence, remediation, cwe}` — reflection and
+redirect findings include an executable curl reproduction.
 
 ---
 
 ## One CLI, every surface
 
-<p align="center">
-  <img alt="OmniSec Tester scans web, extensions, desktop, mobile, cloud, supply chain, AI/LLM, firmware, and network from one CLI" src="assets/readme/platforms.svg" width="100%">
-</p>
-
 ```bash
-omnisectester scan web          --target https://app.io
-omnisectester scan extension    --target addon.crx --platform chrome
-omnisectester scan desktop      --target app.exe --platform windows
-omnisectester scan mobile       --target app.apk --android
-omnisectester scan cloud        --target aws --profile production
-omnisectester scan supply-chain --target .
-omnisectester scan ai           --target https://llm.app.io/chat
-omnisectester scan firmware     --target firmware.bin
+omnisectester scan web           https://app.example      # crawling agent
+omnisectester scan ai            https://llm.example/chat # prompt injection
+omnisectester scan mobile        app.apk                  # static analysis
+omnisectester scan desktop       app.exe                  # binary metadata
+omnisectester scan supply-chain  .                        # deps + CI/CD checks
+omnisectester scan cloud         ./infra                  # IaC/config audit
 ```
 
----
-
-## Severity you can trust
-
-No inflated "CRITICAL" labels. Every finding is scored through **three pillars** — the CVSS 4.0 score, the real-world EPSS exploitation probability, and a stakeholder-specific SSVC decision:
-
-<p align="center">
-  <img alt="Three-pillar severity scoring combining CVSS 4.0, EPSS exploitation prediction, and SSVC decision framework" src="assets/readme/severity.svg" width="100%">
-</p>
-
-Only a handful of categories ever default to CRITICAL; everything else must clear an **EPSS > 0.8** exploitability bar. You get a prioritization list that reflects what attackers are **actually** doing.
-
----
-
-## Compliance mapped automatically
-
-Every finding maps to the compliance controls you care about, so the report doubles as an audit artifact:
-
-<p align="center">
-  <img alt="Every finding automatically maps to PCI DSS, NIST 800-53, SOC 2, ISO 27001, and MITRE ATT&CK" src="assets/readme/compliance.svg" width="100%">
-</p>
-
----
-
-## What it covers
-
-| Domain | Coverage |
-|--------|----------|
-| **Application** | Web, REST/GraphQL/WebSocket APIs, browser extensions, Electron/Qt/native desktop, Android/iOS mobile |
-| **Business logic** | Race conditions, state-machine manipulation, workflow bypass, financial flows, multi-tenant isolation, DeFi reentrancy |
-| **Supply chain** | SBOM generation, dependency confusion / typosquatting, CI/CD pipeline poisoning, artifact & signing verification |
-| **Cloud & infra** | AWS / Azure / GCP IAM, metadata-service SSRF, container escape, Kubernetes RBAC, serverless |
-| **AI / LLM** | Prompt injection, jailbreaks, RAG poisoning, model inversion, adversarial examples |
-| **Memory safety** | Use-after-free, heap manipulation, JIT exploitation, kernel fuzzing (AFL++, LibAFL, Jazzer, Nyx, OneFuzz) |
-| **Hardware / firmware** | UEFI/BIOS, TEE (TrustZone, SGX, SEV), JTAG/UART, cache & power side channels |
-| **Post-exploitation** | Credential dumping, Kerberos / pass-the-hash, lateral movement, persistence, EDR/AMSI evasion, exfiltration |
-| **Network** | TLS 1.3/QUIC, DNS-over-HTTPS, BGP, HTTP/2, WebSocket, TLS & crypto implementation |
+Extension and firmware scanning are roadmap items (see limitations above).
 
 ---
 
@@ -192,54 +119,42 @@ Every finding maps to the compliance controls you care about, so the report doub
 
 | Format | Use case |
 |--------|----------|
-| **HTML** | Interactive report with attack-path graphs and compliance traffic lights |
-| **JSON** | Machine-readable, CI/CD and ticketing integration |
-| **PDF** | Executive / regulator-ready |
-| **SARIF** | IDE and developer workflow |
-| **JUnit XML** | Pipeline gates |
-| **ATT&CK Navigator** | Technique coverage matrix |
+| **JSON** | machine-readable, CI/CD and ticketing integration |
+| **Markdown** | human-readable summary |
+| **HTML** | findings with embedded terminal-style PoC blocks |
+| **SARIF 2.1.0** | GitHub code scanning / IDE workflow |
 
-All evidence is **SHA-256 hashed** with a chain-of-custody manifest and NTP-synchronized timestamps.
+Unsupported formats are reported back explicitly — nothing is silently dropped.
 
 ---
 
 ## Continuous testing
 
-Plug security testing into your pipeline, not just an annual exercise:
-
 ```bash
-# shift-left on every commit / PR
-omnisectester ci-scan --config ci-config.yaml --fail-on critical,high
+# one-shot diff across targets: only NEW findings since last run
+omnisectester continuous --targets https://a.example,https://b.example \
+  --fail-on high
 
-# scheduled scans
-omnisectester continuous --config continuous.yaml --schedule "0 2 * * *"
+# scheduled (cron/CI calls the same command; state auto-stored)
 ```
 
-Daily EPSS feeds, CISA KEV, and ATT&CK technique updates re-prioritize findings automatically.
+State lives in `~/.omnisectester/continuous-state.json`.
 
 ---
 
 ## Config
 
-Drop a `omnisectester.yaml` in your project root:
+Drop a `omnisectester.yaml` in your project root (schema-validated):
 
 ```yaml
+version: "2"
 engagement:
   mode: gray_box          # automated | gray_box | red_team | purple_team | continuous
-  authorization: "AUTH-REF"
   kill_switch: true
-threat_model:
-  frameworks: [STRIDE, PASTA, ATTACK]
-  adversary_profiles: [APT29, APT41]
 testing:
-  authentication: true    # MANDATORY - default on
-  business_logic: true    # MANDATORY
-  supply_chain: true
-  cloud_security: true
-  rate_limit: { requests_per_second: 1 }
+  rate_limit: { requests_per_second: 4 }
 reporting:
-  formats: [json, html, pdf, sarif]
-  compliance_frameworks: [pci_dss, nist_800_53, soc2, iso27001]
+  formats: [json, html, sarif]
 ```
 
 ---
@@ -247,17 +162,18 @@ reporting:
 ## CLI reference
 
 ```
-omnisectester engage <target>      Full engagement (all phases)
-omnisectester scan    <surface>    Platform-specific scan
-omnisectester threat-model <url>   Generate threat model (Step 0)
-omnisectester redteam <target>     Kill-chain simulation
-omnisectester report <input>       Generate report set
-omnisectester sbom <path>          Generate SBOM
-omnisectester continuous           CI/CD integration
-omnisectester verify-tools         Check environment
-omnisectester severity <cve>       CVSS 4.0 + EPSS lookup
-omnisectester list --taxonomy      List 130+ test categories
+omnisectester scan <surface>       Agentic platform scan (web/ai/mobile/desktop/supply-chain/cloud)
+omnisectester engage <target>      Threat model FIRST + agent scan + reports
+omnisectester threat-model <t>     Observation-driven STRIDE model
+omnisectester report <input>       Render md/html/json/sarif
+omnisectester sbom <dir> --vulns   CycloneDX 1.5 + OSV.dev matching
+omnisectester continuous --targets Stateful multi-target monitoring
+omnisectester verify-tools         Environment audit (--strict gate, --fix repair)
+omnisectester severity <cve>       Live CVSS lookup from NVD
+omnisectester list --taxonomy      Category catalog / tools / compliance list
 ```
+
+Agent-facing docs: [`AGENTS.md`](AGENTS.md) · [`llms.txt`](llms.txt) · install as coding-agent skill: `npx skills add iAMv1/omnisectester`
 
 ---
 
@@ -265,13 +181,11 @@ omnisectester list --taxonomy      List 130+ test categories
 
 ```bash
 npm install
-npm test
-npm run lint
-npm link          # use omnisectester from a local checkout
+npm test            # CLI suite (15 behavioral subprocess assertions)
+cd ../omnisectester-core && python -m unittest discover -s tests -v   # engine suite (33)
 ```
 
 - Issues: <https://github.com/iAMv1/omnisectester/issues>
-- Docs: <https://omnisectester.io/docs>
 
 ---
 
@@ -284,4 +198,3 @@ MIT — see [LICENSE](LICENSE) and [CHANGELOG](CHANGELOG.md).
 <p align="center">
   <sub>⚠️ Use OmniSec Tester only on systems you own or have written authorization to test. Unauthorized testing is illegal.</sub>
 </p>
-
