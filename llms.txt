@@ -1,0 +1,25 @@
+# OmniSec Tester
+
+> Deterministic agentic security scanner. Crawls, discovers attack surface,
+> probes with rate limits, validates reflections with executable curl PoCs.
+> Zero-cost core; optional LLM narrative layer.
+
+## Commands
+- `omnisectester scan web <target>` — agent scan (headers, TLS, sensitive paths, reflected XSS via discovered params/forms)
+- `omnisectester severity <cve>` — live CVSS from NVD
+- `omnisectester threat-model <target>` — observation-driven STRIDE rows
+- `omnisectester engage <target>` — threat-model-first full chain + reports
+- `omnisectester sbom <dir> --vulns` — CycloneDX 1.5 + OSV.dev matching
+- `omnisectester report <result.json>` — md/html/json
+- `omnisectester verify-tools --strict` — environment CI gate
+
+## Machine contract
+- One JSON object on stdout; findings sorted by severity
+- Finding shape: {id, title, severity, evidence, remediation, cwe}; reflections include executable curl `poc`
+- Exit: 0 clean · 1 failure · 2 findings met --fail-on threshold
+
+## Flags (scan)
+--rate-limit --max-pages --fail-on --include-subdomains --exclude --auth/--auth-token --format --llm
+
+## Ethics
+Only scan targets you own or are authorized to test.
