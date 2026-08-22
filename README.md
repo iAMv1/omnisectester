@@ -37,7 +37,8 @@ omnisectester scan web <url>            # AGENT: crawls, maps surface, probes, P
 omnisectester engage <url>              # threat model FIRST, then agent scan + report
 omnisectester threat-model <target>     # STRIDE rows driven by observed facts
 omnisectester sbom <dir> --vulns        # CycloneDX 1.5 + OSV.dev vulnerability matching
-omnisectester report <result.json>      # markdown / HTML / JSON reports
+omnisectester continuous --targets a,b  # stateful new-findings diffing
+omnisectester report <result.json>      # markdown / HTML / JSON / SARIF reports
 omnisectester verify-tools              # environment audit (+ --strict CI gate)
 ```
 
@@ -65,8 +66,13 @@ Exit codes: `0` clean · `1` failure · `2` findings met `--fail-on`.
 | Original promise | Status |
 |---|---|
 | "Threat model generated before any test runs" | ✅ **true since v0.2** |
-| "Supply chain testing" | ✅ **true since v0.2** — SBOM + OSV.dev vuln matching |
-| Findings carry working proofs | ✅ reflected-XSS ships executable curl PoC |
+| "Supply chain testing" | ✅ **true since v0.2** — SBOM + OSV.dev vuln matching, batch endpoint since v0.7 |
+| Findings carry working proofs | ✅ curl PoCs for GET + POST reflection, open redirects |
+| Cookie security audit | ✅ Secure/HttpOnly/SameSite checks (v1.0) |
+| Open redirect detection | ✅ sink-named params probed with no-follow requests (v1.2) |
+| TLS certificate lifecycle | ✅ expired/expiring findings (v1.3) |
+| Continuous monitoring | ✅ stateful new-findings diffing across runs (v0.9) |
+| CI/CD integration | ✅ exit gates, JSON/SARIF 2.1.0 output |
 | Business-logic / auth flow testing | ❌ roadmap v0.3+ (needs authenticated crawling) |
 | Cloud / AI-LLM / mobile / firmware engines | ❌ wiring only — honest stubs |
 | Post-exploitation, red-team kill chain | ❌ not built; optional LLM layer planned (`--llm`, bring your own key) |
