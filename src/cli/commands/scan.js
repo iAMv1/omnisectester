@@ -22,6 +22,7 @@ class ScanCommand extends Command {
       .option('--fail-on <level>', 'Exit 2 when findings at/above this severity (critical|high|medium|low|info)')
       .option('--include-subdomains', 'Widen crawl scope to *.target')
       .option('--exclude <patterns>', 'Comma-separated regexes to exclude from crawl')
+      .option('--llm', 'Add optional LLM analysis (needs OMNI_LLM_KEY + OMNI_LLM_MODEL env)')
       .option('--auth <type>', 'Authentication type (bearer, basic, none)')
       .option('--auth-token <token>', 'Authentication token')
       .option('--force', 'Enable destructive tests')
@@ -57,6 +58,7 @@ class ScanCommand extends Command {
       failOn: options.failOn,
       includeSubdomains: options.includeSubdomains || false,
       exclude: options.exclude,
+      llm: options.llm || false,
       auth: {
         type: options.auth || 'none',
         token: options.authToken
