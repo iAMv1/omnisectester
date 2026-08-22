@@ -14,16 +14,19 @@ class ScanCommand extends Command {
       .option('-o, --output <dir>', 'Output directory', './reports')
       .option('--platform <name>', 'Sub-platform (chrome, firefox, electron, android, ios, aws, azure, gcp)')
       .option('--tests <ids>', 'Comma-separated test IDs to run')
-      .option('--exclude <ids>', 'Comma-separated test IDs to exclude')
-      .option('--format <formats>', 'Report formats', 'json,html')      .option('--severity <level>', 'Minimum severity to report', 'low')
+      .option('--exclude <patterns>', 'Comma-separated regexes to exclude from crawl')
+      .option('--suppress <ids>', 'Comma-separated rule IDs to drop from results (FP suppression)')
+      .option('--format <formats>', 'Report formats', 'json,html')
+      .option('--severity <level>', 'Minimum severity to report', 'low')
       .option('--rate-limit <rps>', 'Requests per second', '4')
       .option('--max-pages <n>', 'Agent crawl page cap', '25')
       .option('--fail-on <level>', 'Exit 2 when findings at/above this severity (critical|high|medium|low|info)')
       .option('--include-subdomains', 'Widen crawl scope to *.target')
-      .option('--exclude <patterns>', 'Comma-separated regexes to exclude from crawl')
       .option('--llm', 'Add optional LLM analysis (needs OMNI_LLM_KEY + OMNI_LLM_MODEL env)')
-      .option('--auth <type>', 'Authentication type (bearer, basic, none)')
-      .option('--auth-token <token>', 'Authentication token')
+      .option('--auth <type>', 'Authentication type (bearer, basic, cookie, header, none)')
+      .option('--auth-token <token>', 'Authentication token (Bearer value / user:pass / cookie string / "Name: value")')
+      .option('--login-url <url>', 'Form-login endpoint to POST before scanning')
+      .option('--login-data <data>', 'URL-encoded login body, e.g. "user=a&pass=b"')
       .option('--force', 'Enable destructive tests')
       .action((platform, target, options) => this.execute(platform, target, options));
   }
@@ -49,6 +52,7 @@ class ScanCommand extends Command {
       subPlatform: options.platform,
       tests: options.tests ? options.tests.split(',') : undefined,
       exclude: options.exclude ? options.exclude.split(',') : undefined,
+      suppress: options.suppress,
       output: options.output,
       format: options.format.split(','),
       severity: options.severity,
@@ -56,13 +60,14 @@ class ScanCommand extends Command {
       maxPages: parseInt(options.maxPages, 10),
       failOn: options.failOn,
       includeSubdomains: options.includeSubdomains || false,
-      exclude: options.exclude,
       llm: options.llm || false,
-      auth: {
-        type: options.auth || 'none',
-        token: options.authToken
-      },
-      force: options.force
+      // Flat keys - the Python layer expects --auth <type> --auth-token <v>
+      // as separate flags; a nested object would serialize as "[object Object]".
+      auth: options.auth || undefined,
+      authToken: options.authToken,
+      loginUrl: options.loginUrl,
+      loginData: options.loginData,
+      force: options.force || undefined
     });
 
     this.logger.success(`${platform} scan completed`);

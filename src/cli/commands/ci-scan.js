@@ -12,8 +12,11 @@ class CiScanCommand extends Command {
               'critical')
       .option('--max-pages <n>', 'Agent crawl page cap per target', '25')
       .option('--rate-limit <rps>', 'Requests per second', '4')
-      .option('--auth bearer|basic|cookie|header', 'Auth type')
+      .option('--auth <type>', 'Auth type (bearer, basic, cookie, header)')
       .option('--auth-token <value>', 'Auth token value')
+      .option('--login-url <url>', 'Form-login endpoint to POST before scanning')
+      .option('--login-data <data>', 'URL-encoded login body')
+      .option('--suppress <ids>', 'Comma-separated rule IDs to drop (FP suppression)')
       .option('--json', 'JSON output only')
       .action((options) => this.execute(options));
   }
@@ -40,15 +43,20 @@ class CiScanCommand extends Command {
           maxPages: parseInt(options.maxPages, 10),
           failOn: options.failOn,
           rateLimit: parseInt(options.rateLimit, 10),
-          authType: options.auth || 'none',
-          authToken: options.authToken
+          // Flat keys - Python expects --auth <type> --auth-token <v>.
+          auth: options.auth || undefined,
+          authToken: options.authToken,
+          loginUrl: options.loginUrl,
+          loginData: options.loginData,
+          suppress: options.suppress
         });
         allFindings = allFindings.concat(result.findings || []);
         if (result.gate && result.gate.triggered) gateTriggered = true;
         if (options.json) console.log(JSON.stringify(result));
         else {
-          this.logger.info(`${target}: ${result.stats.total} findings ` +
-            `(critical ${result.stats.critical}, high ${result.stats.high})`);
+          const st = result.stats || {};
+          this.logger.info(`${target}: ${st.total || 0} findings ` +
+            `(critical ${st.critical || 0}, high ${st.high || 0})`);
         }
       } catch (error) {
         this.logger.error(`${target}: ${error.message}`);
