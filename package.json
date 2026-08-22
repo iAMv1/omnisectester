@@ -1,6 +1,6 @@
 {
   "name": "omnisectester",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Nation-state grade, defense-in-depth security testing framework. Tests web apps, extensions, desktop, mobile, cloud, AI/LLM, hardware, and supply chain from a single CLI.",
   "main": "lib/index.js",
   "bin": {
