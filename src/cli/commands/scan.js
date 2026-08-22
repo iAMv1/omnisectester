@@ -61,12 +61,14 @@ class ScanCommand extends Command {
     });
 
     this.logger.success(`${platform} scan completed`);
-    // Mirror the core's --fail-on gate: findings at/above threshold exit 2
-    if (result.gate && result.gate.triggered) {
-      console.error(`[omnisectester] gate triggered: findings at/above "${result.gate.fail_on}"`);
-      process.exit(2);
-    }
+    // Mirror the core's --fail-on gate: print full results, THEN exit 2
+    // so CI consumers get both the report and a failing pipeline.
     console.log(JSON.stringify(result, null, 2));
+    if (result.gate && result.gate.triggered) {
+      // NOT process.exit() - it truncates buffered stdout on pipes.
+      this.logger.error(`gate triggered: findings at/above "${result.gate.fail_on}"`);
+      process.exitCode = 2;
+    }
   }
 }
 
