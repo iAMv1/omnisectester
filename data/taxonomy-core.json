@@ -1,0 +1,554 @@
+[
+ {
+  "domain": "web",
+  "id": "web.injection-sql"
+ },
+ {
+  "domain": "web",
+  "id": "web.injection-nosql"
+ },
+ {
+  "domain": "web",
+  "id": "web.injection-ldap"
+ },
+ {
+  "domain": "web",
+  "id": "web.injection-command"
+ },
+ {
+  "domain": "web",
+  "id": "web.xss-reflected"
+ },
+ {
+  "domain": "web",
+  "id": "web.xss-stored"
+ },
+ {
+  "domain": "web",
+  "id": "web.xss-dom"
+ },
+ {
+  "domain": "web",
+  "id": "web.xxe-classic"
+ },
+ {
+  "domain": "web",
+  "id": "web.xxe-oob"
+ },
+ {
+  "domain": "web",
+  "id": "web.ssrf-server"
+ },
+ {
+  "domain": "web",
+  "id": "web.ssrf-blind"
+ },
+ {
+  "domain": "web",
+  "id": "web.idor"
+ },
+ {
+  "domain": "web",
+  "id": "web.access-control-broken"
+ },
+ {
+  "domain": "web",
+  "id": "web.auth-broken"
+ },
+ {
+  "domain": "web",
+  "id": "web.session-fixation"
+ },
+ {
+  "domain": "web",
+  "id": "web.csrf"
+ },
+ {
+  "domain": "web",
+  "id": "web.open-redirect"
+ },
+ {
+  "domain": "web",
+  "id": "web.path-traversal"
+ },
+ {
+  "domain": "web",
+  "id": "web.lfi-rfi"
+ },
+ {
+  "domain": "web",
+  "id": "web.deserialization-insecure"
+ },
+ {
+  "domain": "web",
+  "id": "web.security-misconfiguration"
+ },
+ {
+  "domain": "web",
+  "id": "web.headers-missing"
+ },
+ {
+  "domain": "web",
+  "id": "web.cors-wildcard"
+ },
+ {
+  "domain": "web",
+  "id": "web.clickjacking"
+ },
+ {
+  "domain": "web",
+  "id": "web.cache-poisoning"
+ },
+ {
+  "domain": "web",
+  "id": "web.request-smuggling"
+ },
+ {
+  "domain": "web",
+  "id": "web.response-splitting"
+ },
+ {
+  "domain": "web",
+  "id": "web.template-injection-ssti"
+ },
+ {
+  "domain": "web",
+  "id": "web.crlf-injection"
+ },
+ {
+  "domain": "web",
+  "id": "web.graphql-introspection"
+ },
+ {
+  "domain": "web",
+  "id": "web.graphql-batching-abuse"
+ },
+ {
+  "domain": "api",
+  "id": "api.api-auth-missing"
+ },
+ {
+  "domain": "api",
+  "id": "api.api-rate-limit-absent"
+ },
+ {
+  "domain": "api",
+  "id": "api.api-versioning-weak"
+ },
+ {
+  "domain": "api",
+  "id": "api.api-mass-assignment"
+ },
+ {
+  "domain": "api",
+  "id": "api.api-excessive-data-exposure"
+ },
+ {
+  "domain": "api",
+  "id": "api.websocket-no-origin-check"
+ },
+ {
+  "domain": "api",
+  "id": "api.graphql-field-suggestion"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.race-condition-tou"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.state-machine-violation"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.workflow-bypass"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.price-tampering"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.quantity-negative"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.coupon-stacking"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.multi-tenant-isolation"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.defi-reentrancy"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.refund-double-spend"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.vote-rigging"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.trial-abuse"
+ },
+ {
+  "domain": "business_logic",
+  "id": "business_logic.loyalty-points-manipulation"
+ },
+ {
+  "domain": "supply_chain",
+  "id": "supply_chain.dependency-confusion"
+ },
+ {
+  "domain": "supply_chain",
+  "id": "supply_chain.typosquatting-package"
+ },
+ {
+  "domain": "supply_chain",
+  "id": "supply_chain.cicd-pipeline-poisoning"
+ },
+ {
+  "domain": "supply_chain",
+  "id": "supply_chain.artifact-tampering"
+ },
+ {
+  "domain": "supply_chain",
+  "id": "supply_chain.signature-missing"
+ },
+ {
+  "domain": "supply_chain",
+  "id": "supply_chain.sbom-drift"
+ },
+ {
+  "domain": "supply_chain",
+  "id": "supply_chain.registry-pin-absent"
+ },
+ {
+  "domain": "supply_chain",
+  "id": "supply_chain.lockfile-divergence"
+ },
+ {
+  "domain": "supply_chain",
+  "id": "supply_chain.postinstall-script-risk"
+ },
+ {
+  "domain": "supply_chain",
+  "id": "supply_chain.transitive-dep-unpinned"
+ },
+ {
+  "domain": "supply_chain",
+  "id": "supply_chain.provenance-attestation-missing"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.iam-overprivileged"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.iam-keys-committed"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.s3-public-read"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.s3-public-write"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.sg-open-ingress"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.sg-open-egress"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.metadata-v1-enabled"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.kms-unencrypted-volume"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.rds-public"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.lambda-env-secrets"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.k8s-privileged-pod"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.k8s-hostmount"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.terraform-state-secrets"
+ },
+ {
+  "domain": "cloud",
+  "id": "cloud.azure-runbook-creds"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.prompt-injection-direct"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.prompt-injection-indirect"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.system-prompt-leak"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.jailbreak-roleplay"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.secret-fishing"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.rag-poisoning"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.training-data-extraction"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.model-inversion"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.adversarial-example-evasion"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.llm-output-xss"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.llm-tool-abuse"
+ },
+ {
+  "domain": "ai_llm",
+  "id": "ai_llm.excessive-agency"
+ },
+ {
+  "domain": "mobile",
+  "id": "mobile.apk-permission-dangerous"
+ },
+ {
+  "domain": "mobile",
+  "id": "mobile.apk-debuggable"
+ },
+ {
+  "domain": "mobile",
+  "id": "mobile.apk-backup-allowed"
+ },
+ {
+  "domain": "mobile",
+  "id": "mobile.apk-unsigned"
+ },
+ {
+  "domain": "mobile",
+  "id": "mobile.exported-component"
+ },
+ {
+  "domain": "mobile",
+  "id": "mobile.deeplink-hijack"
+ },
+ {
+  "domain": "mobile",
+  "id": "mobile.hardcoded-secret-mobile"
+ },
+ {
+  "domain": "mobile",
+  "id": "mobile.insecure-local-storage"
+ },
+ {
+  "domain": "desktop",
+  "id": "desktop.pe-unsigned-binary"
+ },
+ {
+  "domain": "desktop",
+  "id": "desktop.pe-debug-artifacts"
+ },
+ {
+  "domain": "desktop",
+  "id": "desktop.electron-nodeintegration"
+ },
+ {
+  "domain": "desktop",
+  "id": "desktop.electron-csp-unsafe"
+ },
+ {
+  "domain": "desktop",
+  "id": "desktop.updater-no-signature-check"
+ },
+ {
+  "domain": "desktop",
+  "id": "desktop.installer-weak-acl"
+ },
+ {
+  "domain": "network_tls",
+  "id": "network_tls.tls-legacy-protocol"
+ },
+ {
+  "domain": "network_tls",
+  "id": "network_tls.tls-cert-expired"
+ },
+ {
+  "domain": "network_tls",
+  "id": "network_tls.tls-cert-expiring"
+ },
+ {
+  "domain": "network_tls",
+  "id": "network_tls.tls-weak-cipher"
+ },
+ {
+  "domain": "network_tls",
+  "id": "network_tls.hsts-missing"
+ },
+ {
+  "domain": "network_tls",
+  "id": "network_tls.cert-hostname-mismatch"
+ },
+ {
+  "domain": "cookies_session",
+  "id": "cookies_session.cookie-no-secure"
+ },
+ {
+  "domain": "cookies_session",
+  "id": "cookies_session.cookie-no-httponly"
+ },
+ {
+  "domain": "cookies_session",
+  "id": "cookies_session.cookie-no-samesite"
+ },
+ {
+  "domain": "cookies_session",
+  "id": "cookies_session.session-token-entropy-low"
+ },
+ {
+  "domain": "cookies_session",
+  "id": "cookies_session.session-no-expiry"
+ },
+ {
+  "domain": "post_exploitation",
+  "id": "post_exploitation.cred-dumping-opportunity"
+ },
+ {
+  "domain": "post_exploitation",
+  "id": "post_exploitation.kerberoastable-accounts"
+ },
+ {
+  "domain": "post_exploitation",
+  "id": "post_exploitation.asreproastable-accounts"
+ },
+ {
+  "domain": "post_exploitation",
+  "id": "post_exploitation.pass-the-hash-path"
+ },
+ {
+  "domain": "post_exploitation",
+  "id": "post_exploitation.lateral-movement-path"
+ },
+ {
+  "domain": "post_exploitation",
+  "id": "post_exploitation.persistence-startup-entry"
+ },
+ {
+  "domain": "post_exploitation",
+  "id": "post_exploitation.edr-logging-gaps"
+ },
+ {
+  "domain": "post_exploitation",
+  "id": "post_exploitation.data-staging-area"
+ },
+ {
+  "domain": "firmware",
+  "id": "firmware.fw-unsigned-image"
+ },
+ {
+  "domain": "firmware",
+  "id": "firmware.fw-hardcoded-creds-string"
+ },
+ {
+  "domain": "firmware",
+  "id": "firmware.fw-debug-uart-strings"
+ },
+ {
+  "domain": "firmware",
+  "id": "firmware.fw-old-kernel-version"
+ },
+ {
+  "domain": "firmware",
+  "id": "firmware.fw-default-config-backdoor"
+ },
+ {
+  "domain": "extension",
+  "id": "extension.ext-permissions-overbroad"
+ },
+ {
+  "domain": "extension",
+  "id": "extension.ext-remote-code-eval"
+ },
+ {
+  "domain": "extension",
+  "id": "extension.ext-csp-missing"
+ },
+ {
+  "domain": "extension",
+  "id": "extension.ext-update-url-http"
+ },
+ {
+  "domain": "extension",
+  "id": "extension.ext-key-hardcoded"
+ },
+ {
+  "domain": "extension",
+  "id": "extension.ext-content-script-injection"
+ },
+ {
+  "domain": "extension",
+  "id": "extension.ext-webrequest-tap"
+ },
+ {
+  "domain": "misc",
+  "id": "misc.info-disclosure-comments"
+ },
+ {
+  "domain": "misc",
+  "id": "misc.info-disclosure-stacktrace"
+ },
+ {
+  "domain": "misc",
+  "id": "misc.email-harvest"
+ },
+ {
+  "domain": "misc",
+  "id": "misc.subdomain-takeover-prereq"
+ },
+ {
+  "domain": "misc",
+  "id": "misc.dns-zone-transfer"
+ },
+ {
+  "domain": "misc",
+  "id": "misc.whois-privacy-absent"
+ }
+]

@@ -27,10 +27,12 @@ class SeverityCommand extends Command {
       return;
     }
 
-    console.log(`\n${cve} Severity Analysis\n`);
-    console.log(`CVSS Score: ${result.cvss.base_score ?? 'N/A'} (${result.cvss.severity})`);
-    console.log(`EPSS Score: ${result.epss.percentile ?? 'N/A'}`);
-    console.log(`SSVC: ${result.ssvc.exploitation} / ${result.ssvc.utility}`);
+    console.log(`\n${cve} Severity Analysis (three pillars)\n`);
+    const p = result.pillars || {};
+    console.log(`CVSS:  ${p.cvss ?? `${result.cvss.base_score ?? 'N/A'} (${result.cvss.severity})`}`);
+    console.log(`EPSS:  ${p.epss ?? 'N/A'}`);
+    console.log(`KEV:   ${p.kev ?? 'unknown'}`);
+    console.log(`SSVC:  ${p.ssvc_decision ?? result.ssvc.exploitation}`);
     console.log(`Final Severity: ${result.final_severity}\n`);
   }
 }
