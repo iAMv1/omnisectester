@@ -17,7 +17,9 @@ class ScanCommand extends Command {
       .option('--exclude <ids>', 'Comma-separated test IDs to exclude')
       .option('--format <formats>', 'Report formats', 'json,html')
       .option('--severity <level>', 'Minimum severity to report', 'low')
-      .option('--rate-limit <rps>', 'Requests per second', '1')
+      .option('--rate-limit <rps>', 'Requests per second', '4')
+      .option('--max-pages <n>', 'Agent crawl page cap', '25')
+      .option('--fail-on <level>', 'Exit 2 when findings at/above this severity (critical|high|medium|low|info)')
       .option('--auth <type>', 'Authentication type (bearer, basic, none)')
       .option('--auth-token <token>', 'Authentication token')
       .option('--force', 'Enable destructive tests')
@@ -49,6 +51,8 @@ class ScanCommand extends Command {
       format: options.format.split(','),
       severity: options.severity,
       rateLimit: parseInt(options.rateLimit, 10),
+      maxPages: parseInt(options.maxPages, 10),
+      failOn: options.failOn,
       auth: {
         type: options.auth || 'none',
         token: options.authToken
@@ -57,6 +61,11 @@ class ScanCommand extends Command {
     });
 
     this.logger.success(`${platform} scan completed`);
+    // Mirror the core's --fail-on gate: findings at/above threshold exit 2
+    if (result.gate && result.gate.triggered) {
+      console.error(`[omnisectester] gate triggered: findings at/above "${result.gate.fail_on}"`);
+      process.exit(2);
+    }
     console.log(JSON.stringify(result, null, 2));
   }
 }
