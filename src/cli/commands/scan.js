@@ -20,6 +20,8 @@ class ScanCommand extends Command {
       .option('--rate-limit <rps>', 'Requests per second', '4')
       .option('--max-pages <n>', 'Agent crawl page cap', '25')
       .option('--fail-on <level>', 'Exit 2 when findings at/above this severity (critical|high|medium|low|info)')
+      .option('--include-subdomains', 'Widen crawl scope to *.target')
+      .option('--exclude <patterns>', 'Comma-separated regexes to exclude from crawl')
       .option('--auth <type>', 'Authentication type (bearer, basic, none)')
       .option('--auth-token <token>', 'Authentication token')
       .option('--force', 'Enable destructive tests')
@@ -53,6 +55,8 @@ class ScanCommand extends Command {
       rateLimit: parseInt(options.rateLimit, 10),
       maxPages: parseInt(options.maxPages, 10),
       failOn: options.failOn,
+      includeSubdomains: options.includeSubdomains || false,
+      exclude: options.exclude,
       auth: {
         type: options.auth || 'none',
         token: options.authToken
