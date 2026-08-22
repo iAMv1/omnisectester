@@ -1,6 +1,6 @@
 {
   "name": "omnisectester",
-  "version": "2.7.1",
+  "version": "2.7.2",
   "description": "Nation-state grade, defense-in-depth security testing framework. Tests web apps, extensions, desktop, mobile, cloud, AI/LLM, hardware, and supply chain from a single CLI.",
   "main": "lib/index.js",
   "bin": {
@@ -89,7 +89,7 @@
   "config": {
     "python_version": ">=3.10.0",
     "core_package": "omnisectester-core",
-    "engine_release": "v1.6.0",
+    "engine_release": "v1.6.1",
     "install_dir": "~/.omnisectester",
     "cache_dir": "~/.omnisectester/cache",
     "evidence_dir": "~/.omnisectester/evidence",
