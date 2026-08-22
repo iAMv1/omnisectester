@@ -41,6 +41,17 @@ omnisectester report <result.json>      # markdown / HTML / JSON reports
 omnisectester verify-tools              # environment audit (+ --strict CI gate)
 ```
 
+**Agent scope controls** (scan web):
+
+```bash
+--rate-limit 2              # rps - keep low against production
+--max-pages 50              # crawl cap
+--fail-on high              # exit 2 blocks the pipeline
+--include-subdomains        # widen crawl scope
+--exclude "/logout,/admin"  # skip regexes
+--auth bearer "$TOKEN"      # authenticated scanning (also basic|cookie|header)
+```
+
 The `scan` command is a **deterministic agent**: it crawls same-origin pages,
 discovers query params and forms on its own, decides which endpoints to probe,
 validates every reflection with an executable curl PoC, respects a request
