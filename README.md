@@ -33,26 +33,38 @@ Every number below is **measured from this repository's test suite and live runs
 
 ```bash
 omnisectester severity CVE-2021-44228   # live CVSS lookup from NVD
-omnisectester scan web <url>            # headers, TLS, sensitive paths, reflected XSS
-omnisectester engage <url>              # scan + STRIDE threat model + report in one call
-omnisectester threat-model <target>     # 6-row STRIDE table
-omnisectester sbom <dir>                # CycloneDX 1.5 SBOM from package manifests
+omnisectester scan web <url>            # AGENT: crawls, maps surface, probes, PoCs
+omnisectester engage <url>              # threat model FIRST, then agent scan + report
+omnisectester threat-model <target>     # STRIDE rows driven by observed facts
+omnisectester sbom <dir> --vulns        # CycloneDX 1.5 + OSV.dev vulnerability matching
 omnisectester report <result.json>      # markdown / HTML / JSON reports
 omnisectester verify-tools              # environment audit (+ --strict CI gate)
 ```
 
-Deep-scan results carry `{id, title, severity, evidence, remediation, cwe}` with
-deterministic severity ordering; requests are rate-limited; every command emits
-JSON and honors exit-code discipline.
+The `scan` command is a **deterministic agent**: it crawls same-origin pages,
+discovers query params and forms on its own, decides which endpoints to probe,
+validates every reflection with an executable curl PoC, respects a request
+budget, and de-duplicates findings. Threat modeling runs **before** probing —
+and again after, with relevance derived from what was actually observed.
+
+Exit codes: `0` clean · `1` failure · `2` findings met `--fail-on`.
+
+### Claim ledger
+
+| Original promise | Status |
+|---|---|
+| "Threat model generated before any test runs" | ✅ **true since v0.2** |
+| "Supply chain testing" | ✅ **true since v0.2** — SBOM + OSV.dev vuln matching |
+| Findings carry working proofs | ✅ reflected-XSS ships executable curl PoC |
+| Business-logic / auth flow testing | ❌ roadmap v0.3+ (needs authenticated crawling) |
+| Cloud / AI-LLM / mobile / firmware engines | ❌ wiring only — honest stubs |
+| Post-exploitation, red-team kill chain | ❌ not built; optional LLM layer planned (`--llm`, bring your own key) |
 
 ### Roadmap
 
-The Python engine ([omnisectester-core](https://github.com/iAMv1/omnisectester-core))
-is stdlib-only and published — v0.1 covers web surfaces. Next:
-
-- `scan` engines for mobile / cloud / AI / firmware (CLI wiring already in place)
-- OSV vulnerability enrichment for SBOM · authenticated scanning · passive crawl
-- `continuous` scheduler host
+- v0.2.x: OSV enrichment hardening · crawl depth controls · auth hooks
+- v0.3: optional `--llm` layer (attack chaining, narrative reporting) - user's key, user's cost; the deterministic gate stays free
+- Docker sandbox for safe active validation
 
 ---
 
