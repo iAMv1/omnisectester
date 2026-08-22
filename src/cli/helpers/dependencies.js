@@ -5,29 +5,36 @@ const logger = require('./logger');
 const execAsync = promisify(exec);
 
 async function checkPythonInstallation() {
-  const cmd = process.platform === 'win32' ? 'python --version' : 'python3 --version || python --version';
-  try {
-    const { stdout } = await execAsync(cmd);
-    const version = stdout.trim().split(' ')[1];
-    if (!version) throw new Error('unparseable version output');
-    const parts = version.split('.').map(Number);
-    const major = parts[0];
-    const minor = parts[1] || 0;
+  // Windows ships Python as the `py` launcher; python3/python may be absent
+  // or shadowed by the Microsoft Store alias stub.
+  const probes = process.platform === 'win32'
+    ? ['py --version', 'python --version']
+    : ['python3 --version', 'python --version'];
 
-    return {
-      valid: major > 3 || (major === 3 && minor >= 10),
-      version,
-      major,
-      minor,
-      required: '3.10+'
-    };
-  } catch (error) {
-    return {
-      valid: false,
-      version: 'Not found',
-      required: '3.10+'
-    };
+  for (const cmd of probes) {
+    try {
+      const { stdout } = await execAsync(cmd);
+      const version = stdout.trim().split(' ')[1];
+      if (!version) continue;
+      const parts = version.split('.').map(Number);
+      const major = parts[0];
+      const minor = parts[1] || 0;
+
+      return {
+        valid: major > 3 || (major === 3 && minor >= 10),
+        version,
+        major,
+        minor,
+        required: '3.10+',
+        launcher: cmd.split(' ')[0]
+      };
+    } catch (_) { /* try next probe */ }
   }
+  return {
+    valid: false,
+    version: 'Not found',
+    required: '3.10+'
+  };
 }
 
 async function checkNodeModules() {
