@@ -37,8 +37,13 @@ function createLogger() {
   return logger;
 }
 
-// Shared singleton so helpers can `require('./logger').logger`
-// without re-creating transports on every import.
+// Shared singleton. Export the logger instance AS the module so that
+// `const logger = require('./logger'); logger.warn(...)` works at every
+// call site (environment.js / dependencies.js / validators.js pattern),
+// while `{ initLogger }` destructuring keeps working via the attached fn.
+// A previous "lazy getter" version only added a property named `logger`
+// on the exports object - call sites still crashed with
+// "logger.success is not a function".
 let singleton = null;
 
 function initLogger() {
@@ -48,10 +53,5 @@ function initLogger() {
   return singleton;
 }
 
-module.exports = { initLogger };
-
-// Lazy getter keeps `logger.warn(...)` call sites working.
-Object.defineProperty(module.exports, 'logger', {
-  get: () => initLogger(),
-  enumerable: true
-});
+module.exports = initLogger();
+module.exports.initLogger = initLogger;
