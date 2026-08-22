@@ -33,24 +33,26 @@ Every number below is **measured from this repository's test suite and live runs
 
 ```bash
 omnisectester severity CVE-2021-44228   # live CVSS lookup from NVD
-omnisectester list --taxonomy           # vulnerability category catalog
-omnisectester verify-tools              # environment audit (+ --strict CI gate, --fix repair)
+omnisectester scan web <url>            # headers, TLS, sensitive paths, reflected XSS
+omnisectester engage <url>              # scan + STRIDE threat model + report in one call
+omnisectester threat-model <target>     # 6-row STRIDE table
+omnisectester sbom <dir>                # CycloneDX 1.5 SBOM from package manifests
+omnisectester report <result.json>      # markdown / HTML / JSON reports
+omnisectester verify-tools              # environment audit (+ --strict CI gate)
 ```
 
-Plus a validated configuration system (`omnisectester.yaml`, schema-checked),
-a hardened Python bridge (lossless flag forwarding, capped output capture,
-prepended `PYTHONPATH`) and clean failure modes everywhere.
+Deep-scan results carry `{id, title, severity, evidence, remediation, cwe}` with
+deterministic severity ordering; requests are rate-limited; every command emits
+JSON and honors exit-code discipline.
 
-### Roadmap (needs `omnisectester-core`)
+### Roadmap
 
-The deep scanning surfaces below are wired end-to-end in this CLI but execute
-through the Python core package (`omnisectester-core`), which is **not yet
-published**. They fail fast with actionable errors until then:
+The Python engine ([omnisectester-core](https://github.com/iAMv1/omnisectester-core))
+is stdlib-only and published — v0.1 covers web surfaces. Next:
 
-`scan` (web/mobile/cloud/AI/firmware) · `engage` · `redteam` · `threat-model` · `report` · `sbom` · `continuous`
-
-> Want them sooner? The bridge contract lives in [`lib/python-wrapper.js`](lib/python-wrapper.js) —
-> any Python process that speaks `cli.py <command> --json` can back the CLI today.
+- `scan` engines for mobile / cloud / AI / firmware (CLI wiring already in place)
+- OSV vulnerability enrichment for SBOM · authenticated scanning · passive crawl
+- `continuous` scheduler host
 
 ---
 
