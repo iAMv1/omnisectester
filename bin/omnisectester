@@ -84,6 +84,7 @@ program.addCommand(new (load('redteam'))(cliLogger));
 program.addCommand(new (load('report'))(cliLogger));
 program.addCommand(new (load('sbom'))(cliLogger));
 program.addCommand(new (load('continuous'))(cliLogger));
+program.addCommand(new (load('ci-scan'))(cliLogger));
 program.addCommand(new (load('list'))(cliLogger));
 program.addCommand(new (load('verify'))(cliLogger));
 program.addCommand(new (load('severity'))(cliLogger));
